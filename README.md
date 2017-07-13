@@ -86,6 +86,10 @@ The MIT License (MIT)
 
 # Changelog
 
+## 3.1.10
+
+- Add step to Update gcloud.
+
 ## 3.1.8
 
 - Add support for authenticating kubectl with GKE clusters with a Google service account.

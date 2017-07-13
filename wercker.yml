@@ -46,6 +46,11 @@ build:
             name: Extract gcloud archive
             code: |
                 tar -xzf ${GCLOUD_FILENAME}
+        
+        - script:
+            name: Update gcloud
+            code: |
+                yes | ${GCLOUD_DIRNAME}/bin/gcloud components update
 
         - script:
             name: Install kubectl gcloud component

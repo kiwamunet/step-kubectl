@@ -56,6 +56,7 @@ deploy:
           password: $KUBERNETES_PASSWORD
           insecure-skip-tls-verify: true
           command: create -f cities-controller.json
+          gcloud_version: "16X.X.XX-linux-x86_64"
 ```
 
 # Google Container Engine (GKE) clusters
@@ -86,9 +87,9 @@ The MIT License (MIT)
 
 # Changelog
 
-## 3.1.10
+## 3.2.0
 
-- Add step to Update gcloud.
+- Move install of gcloud in run.sh.
 
 ## 3.1.8
 

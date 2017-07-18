@@ -1,7 +1,8 @@
 #!/bin/sh
 
-GCLOUD_INSTALL_DIR="$WERCKER_STEP_ROOT/google-cloud-sdk/bin/"
-kubectl="$GCLOUD_INSTALL_DIR/kubectl"
+GCLOUD_INSTALL_DIR="$WERCKER_SOURCE_DIR/kubernetes/google-cloud-sdk/bin/"
+kubectl="$WERCKER_SOURCE_DIR/kubernetes/google-cloud-sdk/bin/kubectl"
+gcloud="$GCLOUD_INSTALL_DIR/gcloud"
 
 gcloud_auth_config() {
 
@@ -17,7 +18,6 @@ gcloud_auth_config() {
     fail "GKE cluster project name must be provided."
   fi
 
-  gcloud="$GCLOUD_INSTALL_DIR/gcloud"
   gcloud_key_file="$WERCKER_STEP_ROOT/gcloud.json"
 
   export CLOUDSDK_COMPUTE_ZONE="$WERCKER_KUBECTL_GKE_CLUSTER_ZONE"
@@ -41,8 +41,25 @@ gcloud_auth_config() {
   fi
 }
 
+install_kubectl() {
+  GCLOUD_DIRNAME="google-cloud-sdk"
+  if [ -n "$WERCKER_KUBECTL_GCLOUD_VERSION" ]; then
+    GCLOUD_FILENAME="${GCLOUD_DIRNAME}-${WERCKER_KUBECTL_GCLOUD_VERSION}.tar.gz"
+    GCLOUD_URL=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/${GCLOUD_FILENAME}
+    curl -L "${GCLOUD_URL}" -o "${GCLOUD_FILENAME}"
+    tar -xzf "${GCLOUD_FILENAME}"
+  else 
+    curl https://dl.google.com/dl/cloudsdk/release/install_google_cloud_sdk.bash > install_google_cloud_sdk.bash && bash install_google_cloud_sdk.bash --disable-prompts --install-dir ./
+  fi
+    yes | "$gcloud" components install kubectl
+}
+
+
 main() {
-  display_version
+
+  install_kubectl;
+
+  display_version;
 
   if [ -n "$WERCKER_KUBECTL_GCLOUD_KEY_JSON" ]; then
     # Google cloud key JSON found. We'll assume kubectl
